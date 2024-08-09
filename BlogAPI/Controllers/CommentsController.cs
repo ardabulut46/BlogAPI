@@ -46,7 +46,7 @@ namespace BlogAPI.Controllers
         // PUT: api/Comments/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutComment(int id, Comment comment)
+        public async Task<ActionResult> PutComment(int id, Comment comment)
         {
             if (id != comment.Id)
             {
@@ -94,7 +94,7 @@ namespace BlogAPI.Controllers
 
         // DELETE: api/Comments/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteComment(int id)
+        public async Task<ActionResult> DeleteComment(int id)
         {
             var comment = await _context.Comments.FindAsync(id);
             if (comment == null)

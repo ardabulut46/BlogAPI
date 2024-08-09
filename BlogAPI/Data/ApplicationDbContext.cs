@@ -1,66 +1,111 @@
 ﻿using BlogAPI.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 
 namespace BlogAPI.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<AppUser>
+    public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-        {
-            
-        }
-        public DbSet<Member>? Members {  get; set; }
-        public DbSet<Entry>? Entries { get; set; }
-        public DbSet<Comment>? Comments { get; set; }
-        public DbSet<Category>? Categories { get; set; }
-        public DbSet<MemberEntry>? MemberEntries { get; set; }
-        public DbSet<MemberComment>? MemberComments { get; set; }
-        public DbSet<UserLikeDislike>? UserLikeDislikes { get; set; }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+
+        public DbSet<Member> Members { get; set; }
+        public DbSet<Bookmark> Bookmarks { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Entry> Entries { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<MemberComment> MemberComments { get; set; }
+        public DbSet<MemberEntry> MemberEntries { get; set; }
+        public DbSet<UserLikeDislike> UserLikeDislikes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<MemberEntry>().HasKey(me => new { me.EntryId, me.MemberId });
-            builder.Entity<MemberComment>().HasKey(mc => new { mc.MemberId,mc.CommentId});
-            builder.Entity<UserLikeDislike>().HasKey(mc => new { mc.MemberId, mc.EntryId });
-
-            // Composite key for Bookmark entity
-            builder.Entity<Bookmark>()
-                .HasKey(b => new { b.MemberId, b.EntryId });
-            builder.Entity<Bookmark>()
-        .HasOne(b => b.Member)
-        .WithMany() // Assuming no navigation property on AppUser for Bookmarks
-        .HasForeignKey(b => b.MemberId)
-        .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete
 
             builder.Entity<Bookmark>()
-                .HasOne(b => b.Entry)
-                .WithMany() // Assuming no navigation property on Entry for Bookmarks
-                .HasForeignKey(b => b.EntryId)
-                .OnDelete(DeleteBehavior.Restrict);
+                 .HasOne(b => b.Member)
+                 .WithMany()
+                 .HasForeignKey(b => b.MemberId)
+                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Configure Comment entity relationships
-            builder.Entity<Comment>()
-                .HasKey(c => c.Id); // Single primary key for Comment
+            builder.Entity<Bookmark>()
+                 .HasOne(b => b.Entry)
+                 .WithMany()
+                 .HasForeignKey(b => b.EntryId)
+                 .OnDelete(DeleteBehavior.Restrict);
 
-           
-            builder.Entity<Comment>()
-                .HasOne(c => c.Entry)
-                .WithMany(e => e.Comments)
-                .HasForeignKey(c => c.EntryId)
-                .OnDelete(DeleteBehavior.Cascade); // Configure delete behavior as needed
+            builder.Entity<Category>()
+                 .HasOne(b => b.Entry)
+                 .WithMany()
+                 .HasForeignKey(b => b.EntryId)
+                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Configure the relationship between Comment and Member
             builder.Entity<Comment>()
                 .HasOne(c => c.Member)
-                .WithMany(m => m.Comments)
+                .WithMany()
                 .HasForeignKey(c => c.MemberId)
-                .OnDelete(DeleteBehavior.Restrict); // Configure delete behavior as needed
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Comment>()
+                .HasOne(c => c.Entry)
+                .WithMany()
+                .HasForeignKey(c => c.EntryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Comment>()
+                .HasOne(c => c.Parent)
+                .WithMany()
+                .HasForeignKey(c => c.ParentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Entry>()
+                .HasOne(c => c.Member)
+                .WithMany()
+                .HasForeignKey(e => e.MemberId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<MemberComment>()
+                .HasOne(c => c.AppUser)
+                .WithMany()
+                .HasForeignKey(c => c.MemberId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<MemberComment>()
+                .HasOne(c => c.Comment)
+                .WithMany()
+                .HasForeignKey(c => c.CommentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<MemberEntry>()
+               .HasOne(c => c.Member)
+               .WithMany()
+               .HasForeignKey(c => c.MemberId)
+               .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<MemberEntry>()
+                .HasOne(c => c.Entry)
+                .WithMany()
+                .HasForeignKey(c => c.EntryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<UserLikeDislike>()
+               .HasOne(c => c.AppUser)
+               .WithMany()
+               .HasForeignKey(c => c.MemberId)
+               .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<UserLikeDislike>()
+                .HasOne(c => c.Entry)
+                .WithMany()
+                .HasForeignKey(c => c.EntryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+
+
+
+
+
+
+
         }
-        public DbSet<BlogAPI.Models.Bookmark> Bookmark { get; set; } = default!;
-
-
     }
 }

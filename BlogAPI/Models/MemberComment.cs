@@ -4,8 +4,8 @@ namespace BlogAPI.Models
 {
     public class MemberComment
     { 
-        // Comment classındaki parent id null ise yani yorumun yorumu değil; gönderiye atılmış bir yorumsa buraya kaydedilmeli
-
+        public int Id { get; set; } 
+        
         public string MemberId { get; set; } = "";
 
         public int CommentId { get; set; }

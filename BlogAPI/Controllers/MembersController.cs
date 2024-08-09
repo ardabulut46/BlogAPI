@@ -54,7 +54,7 @@ namespace BlogAPI.Controllers
         // PUT: api/Members/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMember(string id, Member member)
+        public async Task<ActionResult> PutMember(string id, Member member)
         {
             if (id != member.Id)
             {
@@ -110,7 +110,7 @@ namespace BlogAPI.Controllers
 
         // DELETE: api/Members/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMember(string id)
+        public async Task<ActionResult> DeleteMember(string id)
         {
             var member = await _context.Members.FindAsync(id);
             if (member == null)

@@ -49,7 +49,7 @@ namespace BlogAPI.Controllers
         // PUT: api/Entries/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEntry(int id, Entry entry)
+        public async Task<ActionResult> PutEntry(int id, Entry entry)
         {
             if (id != entry.Id)
             {
@@ -90,7 +90,7 @@ namespace BlogAPI.Controllers
 
         // DELETE: api/Entries/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEntry(int id)
+        public async Task<ActionResult> DeleteEntry(int id)
         {
             var entry = await _context.Entries.FindAsync(id);
             if (entry == null)
@@ -112,7 +112,7 @@ namespace BlogAPI.Controllers
 
         [Authorize]
         [HttpPost("Like or dislike")]
-        public async Task<IActionResult> Like(int entryId)
+        public async Task<ActionResult> Like(int entryId)
         {
             var entryFind = await _context.Entries.FindAsync(entryId);
             var likeDislikeFind = await _context.UserLikeDislikes.FindAsync(ClaimTypes.NameIdentifier);
@@ -156,8 +156,8 @@ namespace BlogAPI.Controllers
             return Ok();
         }
         [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> DisLike(int entryId)
+        [HttpPost("Dislike")]
+        public async Task<ActionResult> DisLike(int entryId)
         {
             var entryFind = await _context.Entries.FindAsync(entryId);
             var likeDislikeFind = await _context.UserLikeDislikes.FindAsync(ClaimTypes.NameIdentifier);
@@ -201,11 +201,11 @@ namespace BlogAPI.Controllers
         }
         [Authorize]
         [HttpPost("Save the post")]
-        public async Task<IActionResult> Save(int entryId) 
+        public async Task<ActionResult> Save(int entryId) 
         {
             var entryFind = await _context.Entries.FindAsync(entryId);
                 
-            var bookmarkFind = await _context.Bookmark.FindAsync(User.FindFirstValue(ClaimTypes.NameIdentifier),entryId);
+            var bookmarkFind = await _context.Bookmarks.FindAsync(User.FindFirstValue(ClaimTypes.NameIdentifier),entryId);
 
             if (bookmarkFind == null)
             {
@@ -215,23 +215,23 @@ namespace BlogAPI.Controllers
                     EntryId = entryId,
                     MemberId = User.FindFirstValue(ClaimTypes.NameIdentifier)
                 };
-                // entry to bookmark db
+                _context.Bookmarks.Add(bookmark);
 
             }
             return Ok();
 
         }
         [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> RemoveBookmark(int entryId) 
+        [HttpPost("Remove bookmark")]
+        public async Task<ActionResult> RemoveBookmark(int entryId) 
         {
             var entryFind = await _context.Entries.FindAsync(entryId);
 
-            var bookmarkFind = await _context.Bookmark.FindAsync(User.FindFirstValue(ClaimTypes.NameIdentifier), entryId);
+            var bookmarkFind = await _context.Bookmarks.FindAsync(User.FindFirstValue(ClaimTypes.NameIdentifier), entryId);
 
             if (bookmarkFind != null)
             {
-                _context.Bookmark.Remove(bookmarkFind);
+                _context.Bookmarks.Remove(bookmarkFind);
 
             }
             return Ok();

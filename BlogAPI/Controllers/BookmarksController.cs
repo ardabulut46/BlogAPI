@@ -25,14 +25,14 @@ namespace BlogAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Bookmark>>> GetBookmark()
         {
-            return await _context.Bookmark.ToListAsync();
+            return await _context.Bookmarks.ToListAsync();
         }
 
         // GET: api/Bookmarks/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Bookmark>> GetBookmark(string id)
         {
-            var bookmark = await _context.Bookmark.FindAsync(id);
+            var bookmark = await _context.Bookmarks.FindAsync(id);
 
             if (bookmark == null)
             {
@@ -45,7 +45,7 @@ namespace BlogAPI.Controllers
         // PUT: api/Bookmarks/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBookmark(string id, Bookmark bookmark)
+        public async Task<ActionResult> PutBookmark(string id, Bookmark bookmark)
         {
             if (id != bookmark.MemberId)
             {
@@ -78,7 +78,7 @@ namespace BlogAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Bookmark>> PostBookmark(Bookmark bookmark)
         {
-            _context.Bookmark.Add(bookmark);
+            _context.Bookmarks.Add(bookmark);
             try
             {
                 await _context.SaveChangesAsync();
@@ -100,15 +100,15 @@ namespace BlogAPI.Controllers
 
         // DELETE: api/Bookmarks/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBookmark(string id)
+        public async Task<ActionResult> DeleteBookmark(string id)
         {
-            var bookmark = await _context.Bookmark.FindAsync(id);
+            var bookmark = await _context.Bookmarks.FindAsync(id);
             if (bookmark == null)
             {
                 return NotFound();
             }
 
-            _context.Bookmark.Remove(bookmark);
+            _context.Bookmarks.Remove(bookmark);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -116,7 +116,7 @@ namespace BlogAPI.Controllers
 
         private bool BookmarkExists(string id)
         {
-            return _context.Bookmark.Any(e => e.MemberId == id);
+            return _context.Bookmarks.Any(e => e.MemberId == id);
         }
     }
 }

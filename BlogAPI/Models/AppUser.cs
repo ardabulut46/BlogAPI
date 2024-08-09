@@ -43,8 +43,7 @@ namespace BlogAPI.Models
 
         public List<MemberEntry>? MemberEntries { get; set; }
 
-        public List<MemberComment>? MemberComments { get; set; }
-
+        
 
 
       

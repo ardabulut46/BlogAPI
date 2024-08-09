@@ -4,6 +4,8 @@ namespace BlogAPI.Models
 {
     public class Bookmark
     {
+        public int Id { get; set; } 
+
         public string MemberId { get; set; } = ""; 
 
         public int EntryId { get; set; }

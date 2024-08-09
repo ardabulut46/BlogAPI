@@ -45,7 +45,7 @@ namespace BlogAPI.Controllers
         // PUT: api/Categories/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategory(int id, Category category)
+        public async Task<ActionResult> PutCategory(int id, Category category)
         {
             if (id != category.Id)
             {
@@ -86,7 +86,7 @@ namespace BlogAPI.Controllers
 
         // DELETE: api/Categories/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory(int id)
+        public async Task<ActionResult> DeleteCategory(int id)
         {
             var category = await _context.Categories.FindAsync(id);
             if (category == null)
